@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Calendar</title>
+    <style>
+        #calendar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            width: 220px;
+            margin-bottom: 10px;
+        }
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 30px);
+            grid-gap: 5px;
+        }
+        .day {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+        .today {
+            background-color: yellow;
+        }
+    </style>
+</head>
+<body>
+<div id="calendar">
+    <div class="header">
+        <button onclick="changeMonth(-1)">&lt; Prev</button>
+        <span id="monthYear"></span>
+        <button onclick="changeMonth(1)">Next &gt;</button>
+    </div>
+    <div class="days" id="days"></div>
+</div>
+
+<script>
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
+
+    function createDay(num, isToday) {
+        const dayElement = document.createElement('div');
+        dayElement.className = `day${isToday ? ' today' : ''}`;
+        dayElement.textContent = num;
+        return dayElement;
+    }
+
+    function updateCalendar() {
+        const monthYear = document.getElementById('monthYear');
+        const daysContainer = document.getElementById('days');
+        daysContainer.innerHTML = '';
+        monthYear.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+        const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        
+        for (let i = 0; i < firstDayOfMonth; i++) {
+            daysContainer.appendChild(createDay(''));
+        }
+        for (let i = 1; i <= daysInMonth; i++) {
+            const isToday = i === currentDate.getDate() && currentMonth === currentDate.getMonth() && currentYear === currentDate.getFullYear();
+            daysContainer.appendChild(createDay(i, isToday));
+        }
+    }
+
+    function changeMonth(change) {
+        currentMonth += change;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        } else if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        updateCalendar();
+    }
+
+    updateCalendar();
+</script>
+</body>
+</html>
